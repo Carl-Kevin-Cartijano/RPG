@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/playerImageView"
+        android:layout_width="103dp"
+        android:layout_height="91dp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:contentDescription="Player Image"
+        android:src="@drawable/playerimageview" />
+
+    <TextView
+        android:id="@+id/playerHealth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Player Health: 100"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/enemyImageView"
+        android:layout_width="132dp"
+        android:layout_height="105dp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:contentDescription="Enemy Image"
+        android:src="@drawable/enemyimageview" />
+
+    <TextView
+        android:id="@+id/enemyHealth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:text="Enemy Health: 100"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/attackButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Attack"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/defendButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Defend"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/healButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Heal"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/rollDiceButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Roll Dice"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reset Game"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/gameStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>
