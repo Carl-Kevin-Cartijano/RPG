@@ -22,7 +22,8 @@ class MainActivity : AppCompatActivity() {
     private var enemyHealth = 100
     private var isPlayerDefending = false
     private var currentTurn: String? = null
-    private var gameOver = false
+    private var gameOver = false // Flag to track game over
+    private var isFirstTurn = true // Flag to track the first turn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,29 +60,42 @@ class MainActivity : AppCompatActivity() {
         }
 
         rollDiceButton.setOnClickListener {
-            rollDiceToDetermineFirstTurn()
+            if (isFirstTurn) {
+                isFirstTurn = false
+                disableButtonsExcept(rollDiceButton)
+                rollDiceToDetermineFirstTurn()
+            }
         }
 
-        // Disable buttons initially
+
         disableButtons()
 
-        // Roll the dice to determine the first turn when the app starts.
+
         rollDiceToDetermineFirstTurn()
     }
 
+    private fun disableButtonsExcept(rollDiceButton: Button?) {
+        attackButton.isEnabled = false
+        defendButton.isEnabled = false
+        healButton.isEnabled = false
+        resetButton.isEnabled = false
+        rollDiceButton?.isEnabled = true
+    }
+
     private fun rollDice(sides: Int): Int {
-        return Random().nextInt(sides)
+        return Random().nextInt(sides) + 1
     }
 
     private fun rollDiceToDetermineFirstTurn() {
-        val diceResult = rollDice(2) // Roll a 2-sided dice (0 or 1)
-        if (diceResult == 0) {
+        val diceResult = rollDice(2)
+        if (diceResult == 1) {
             currentTurn = "Player"
-        } else {
+        }
+        else {
             currentTurn = "Enemy"
         }
         displayCurrentTurn()
-        enableButtons() // Enable buttons after rolling the dice
+        enableButtons()
     }
 
     private fun displayCurrentTurn() {
@@ -89,89 +103,78 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun playerTurn() {
-        // Check if it's the player's turn before allowing actions.
+
         if (!gameOver && currentTurn == "Player") {
             disableButtons() // Disable buttons at the start of the player's turn
             displayPlayerAction("It's your turn.")
             displayPlayerAction("You use a normal attack.")
-            val damageDealt = rollDice(20) + 10 // Roll a 20-sided dice and add 10 for damage
+            val damageDealt = rollDice(20) + 10
             enemyHealth -= damageDealt
             if (enemyHealth < 0) {
                 enemyHealth = 0
             }
             updateHealthViews()
             checkGameStatus()
-            currentTurn = "Enemy" // Switch to the enemy's turn
+            currentTurn = "Enemy"
             displayCurrentTurn()
             enemyTurn()
         }
     }
 
-    private fun playerAttack() {
-        val damageDealt = rollDice(20) + 10 // Roll a 20-sided dice and add 10 for damage
-        enemyHealth -= damageDealt
-        if (enemyHealth < 0) {
-            enemyHealth = 0
-        }
-        updateHealthViews()
-        checkGameStatus()
-        displayPlayerAction("You attack for $damageDealt damage.")
-    }
-
     private fun playerDefend() {
         isPlayerDefending = true
         displayPlayerAction("You defend against the enemy's attack.")
-        currentTurn = "Enemy" // Switch to the enemy's turn
+        currentTurn = "Enemy"
         displayCurrentTurn()
         enemyTurn()
     }
 
     private fun playerHeal() {
-        if (!gameOver && playerHealth < 100) { // Limit healing to not exceed maximum health.
-            val healingAmount = rollDice(15) + 10 // Roll a 15-sided dice and add 10 for healing
+        if (!gameOver && playerHealth < 100) {
+            val healingAmount = rollDice(15) + 10
             playerHealth += healingAmount
             displayPlayerAction("You heal for $healingAmount health.")
-            currentTurn = "Enemy" // Switch to the enemy's turn
+            currentTurn = "Enemy"
             displayCurrentTurn()
             enemyTurn()
         }
     }
 
     private fun enemyTurn() {
-        // Check if it's the enemy's turn before allowing actions.
+
         if (!gameOver && currentTurn == "Enemy") {
-            disableButtons() // Disable buttons at the start of the enemy's turn
-            val action = rollDice(3) // Roll a 3-sided dice (0: Attack, 1: Defend, 2: Heal)
-            if (action == 0) {
+            disableButtons()
+            val action = rollDice(3)
+            if (action == 1) {
                 val damageDealt = if (isPlayerDefending) {
-                    rollDice(10) + 5 // Reduced damage if player is defending
+                    rollDice(10) + 5
                 } else {
-                    rollDice(15) + 10 // Roll a 15-sided dice and add 10 for damage
+                    rollDice(15) + 10
                 }
                 playerHealth -= damageDealt
                 if (playerHealth < 0) {
                     playerHealth = 0
                 }
-                isPlayerDefending = false // Reset defense state after the enemy's turn
+                isPlayerDefending = false
                 updateHealthViews()
                 checkGameStatus()
-                currentTurn = "Player" // Switch to the player's turn
+                currentTurn = "Player"
                 displayCurrentTurn()
                 displayEnemyAction("Enemy attacks for $damageDealt damage.")
-                enableButtons() // Enable buttons after rolling the dice
-            } else if (action == 1) {
+                enableButtons()
+            } else if (action == 2) {
                 displayEnemyAction("Enemy defends.")
-                currentTurn = "Player" // Switch to the player's turn
+                currentTurn = "Player"
                 displayCurrentTurn()
-                enableButtons() // Enable buttons after rolling the dice
+                enableButtons()
             } else {
-                val healing = rollDice(15) + 5 // Roll a 15-sided dice and add 5 for healing
+                val healing = rollDice(15) + 5
                 enemyHealth += healing
                 updateHealthViews()
                 displayCurrentTurn()
                 displayEnemyAction("Enemy heals for $healing health.")
-                currentTurn = "Player" // Switch to the player's turn
-                enableButtons() // Enable buttons after rolling the dice
+                currentTurn = "Player"
+                enableButtons()
             }
         }
     }
@@ -183,11 +186,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkGameStatus() {
         if (playerHealth <= 0 || enemyHealth <= 0) {
-            gameOver = true // Set the game over flag
+            gameOver = true
             disableAllButtonsExceptReset()
             if (playerHealth <= 0) {
                 "Game over. You lose.".also { gameStatusTextView.text = it }
-            } else {
+            }
+            else {
                 "Congratulations! You win.".also { gameStatusTextView.text = it }
             }
         }
@@ -203,6 +207,9 @@ class MainActivity : AppCompatActivity() {
         attackButton.isEnabled = true
         defendButton.isEnabled = true
         healButton.isEnabled = true
+        if (currentTurn == "Player") {
+            attackButton.isEnabled = !gameOver
+        }
         rollDiceButton.isEnabled = true
     }
 
@@ -211,7 +218,7 @@ class MainActivity : AppCompatActivity() {
         defendButton.isEnabled = false
         healButton.isEnabled = false
         rollDiceButton.isEnabled = false
-        resetButton.isEnabled = true // Enable only the reset button
+        resetButton.isEnabled = true
     }
 
     private fun displayEnemyAction(action: String) {
@@ -223,13 +230,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun resetGame() {
-        gameOver = false // Reset the game over flag
+        gameOver = false
         playerHealth = 100
         enemyHealth = 100
         updateHealthViews()
         enableButtons()
         gameStatusTextView.text = ""
-        currentTurn = "Player" // Set the initial turn to player
+        currentTurn = "Player"
         displayCurrentTurn()
     }
 }
