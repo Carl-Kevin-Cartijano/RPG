@@ -68,13 +68,7 @@ class MainActivity : AppCompatActivity() {
         rollDiceToDetermineFirstTurn()
     }
 
-    private fun disableButtonsExcept(rollDiceButton: Button?) {
-        attackButton.isEnabled = false
-        defendButton.isEnabled = false
-        healButton.isEnabled = false
-        resetButton.isEnabled = false
-        rollDiceButton?.isEnabled = true
-    }
+
 
     private fun rollDice() {
 
@@ -107,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun playerTurn(action: String) {
         if (!gameOver && currentTurn == "Player") {
-            disableButtons() // Disable buttons at the start of the player's turn
+            disableButtons()
             displayPlayerAction("It's your turn.")
             when (action) {
                 "Attack" -> {
